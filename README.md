@@ -83,3 +83,19 @@ If the deploy fails with `gunicorn: command not found` (status 127), `gunicorn` 
 If requests time out (the logs may show `WORKER TIMEOUT`), for example when the OpenAI call is slow, add the `--timeout` parameter to the `gunicorn` line in the Render configuration. gunicorn stops a request after 30 seconds by default, and this raises the limit to 240 seconds:
 
 - **Start command:** `gunicorn app:app --timeout 240`
+
+## Paired studio interface
+
+One central prompt makes a text response and a companion image. Expand Generation settings to edit the system prompt, text model, temperature, response limit, and image look. The image model remains GPT Image 1 Mini, low quality, 1024 square. The Early AI look is a prompt treatment, not an older model.
+
+Results append without page navigation. IndexedDB preserves paired and earlier single-media entries in the same browser; history is not synced between devices or origins. Text and image downloads remain available. If the image call fails, completed text is kept with the error. Settings persist locally.
+
+The shared five-image allowance resets on server restart and is not an account billing limit. Failed image calls consume an attempt. There are no automatic provider retries. Each provider call has a 110-second timeout, keeping the two-call path within the configured 240-second worker timeout.
+
+Original hero artwork: `static/art/red-membrane.jpg`; generation prompt/provenance in `static/art/provenance.json`. The image is decorative artwork, not a live generation sample. No custom cursor or pointer-reactive effects. FT Overpass is loaded from an installed licensed copy when present, otherwise Arial; no font binaries are redistributed. Calder identity is outlined SVG.
+
+Regression checks (mocked, no API charges):
+
+```bash
+python -m unittest discover -s tests -v
+```
