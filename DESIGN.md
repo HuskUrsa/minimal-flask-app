@@ -130,4 +130,4 @@ Softened rectangular controls use the radius tokens; generated images are almost
 
 ## October 8 minimal motion revision
 
-Sam requested the headline/tagline removed and prompt/settings as the primary surface. Full-viewport red-black textured video generated on free Hugging Face, silent forward/reverse loop, ambient canvas particles behind opaque controls. Native cursor, persistent motion pause control, reduced-motion and hidden-tab pausing. Mobile settings and result pairs stack; Generate both fills the narrowest viewport.
+Sam requested the headline/tagline removed and prompt/settings as the primary surface. Full-viewport red-black textured video generated on free Hugging Face, silent forward-only loop with a short cross-dissolve at the seam, ambient canvas particles behind opaque controls. Native cursor, persistent motion pause control, reduced-motion and hidden-tab pausing. Mobile settings and result pairs stack; Generate both fills the narrowest viewport.
