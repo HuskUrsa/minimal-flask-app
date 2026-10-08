@@ -10,16 +10,52 @@
 <details open><summary>Settings</summary><label for="instructions">System prompt</label><small>Set its role, tone, and rules. Replace this with anything you want.</small><textarea id="instructions" name="instructions" rows="5" maxlength="2000">{{values.instructions}}</textarea>
 <button type="button" id="original-preset" data-preset="{{original_instructions}}">Use original psychedelic preset</button><div class="settings"><div><label for="model">Model</label><select id="model" name="model">{% for model in ['gpt-4.1-mini','gpt-4.1'] %}<option {% if values.model==model %}selected{% endif %}>{{model}}</option>{% endfor %}</select><small>Mini is the lower-cost text option.</small></div><div><label for="max_tokens">Response limit (tokens)</label><input id="max_tokens" name="max_tokens" type="number" min="50" max="500" value="{{values.max_tokens}}"><small>A limit, not a guaranteed word count.</small></div></div>
 <label for="temperature">Temperature: <output id="temperature-value">{{values.temperature}}</output></label><input id="temperature" name="temperature" type="range" min="0" max="2" step="0.1" value="{{values.temperature}}"><small>Lower tends to be more consistent; higher more varied.</small>
-</details><button name="action" value="text">Generate text</button>{% if result %}<div class="output" role="status">{{result}}</div>{% endif %}</section>
+</details><button name="action" value="text">Generate text</button><div id="text-history" aria-live="polite">{% if result %}<div class="output">{{result}}</div>{% endif %}</div></section>
 <section><h2>Lo-fi image</h2><label for="image_prompt">Image prompt</label><textarea id="image_prompt" name="image_prompt" rows="5" maxlength="1200" placeholder="An empty laundromat with one red chair at 3 a.m.">{{values.image_prompt}}</textarea>
 <label for="style">Look</label><select id="style" name="style">{% for key,label in [('snapshot','Early digital camera'),('scan','Photocopied zine'),('dream','Faded, uncanny photograph'),('none','Just my prompt')] %}<option value="{{key}}" {% if values.style==key %}selected{% endif %}>{{label}}</option>{% endfor %}</select>
-<p><small>One 1024 × 1024 image, low quality. GPT Image 1 Mini: approximately US$0.005 plus prompt costs per image.</small><small>{{remaining}} of 5 image attempts remaining on this server. Allowance resets when the server restarts. Images are not saved here: download before leaving.</small></p>
+<p><small>One 1024 × 1024 image, low quality. GPT Image 1 Mini: approximately US$0.005 plus prompt costs per image.</small><small><span id="remaining">{{remaining}}</span> of 5 image attempts remaining on this server. Allowance resets when the server restarts. History is saved in this browser. Download images you want to keep permanently.</small></p>
 <button name="action" value="image" {% if remaining==0 %}disabled{% endif %}>Generate image</button>
-{% if image %}<img src="data:image/png;base64,{{image}}" alt="Generated image from your prompt"><a class="download" href="data:image/png;base64,{{image}}" download="lofi-image.png">Download image</a>{% endif %}</section></div></form>
+<div id="image-history" aria-live="polite">{% if image %}<img src="data:image/png;base64,{{image}}" alt="Generated image from your prompt"><a class="download" href="data:image/png;base64,{{image}}" download="lofi-image.png">Download image</a>{% endif %}</div></section></div></form>
 <footer><span>Sam Hoyek</span><span>Text + image experiments</span></footer></main><script>
 document.querySelector('#original-preset').addEventListener('click',e=>document.querySelector('#instructions').value=e.currentTarget.dataset.preset);
 const slider=document.querySelector('#temperature');slider.addEventListener('input',()=>document.querySelector('#temperature-value').value=slider.value);
-document.querySelector('form').addEventListener('submit',e=>{const button=e.submitter;if(button){button.textContent=button.value==='image'?'Making your image…':'Writing…';document.querySelectorAll('button').forEach(b=>b.style.pointerEvents='none');}});
+const form=document.querySelector('form');
+const status=document.createElement('p');status.setAttribute('role','status');form.before(status);
+let busy=false,db;
+const ready=new Promise(resolve=>{
+  try {const opening=indexedDB.open('sam-generation-history',1);
+    opening.onupgradeneeded=()=>opening.result.createObjectStore('results',{keyPath:'id'});
+    opening.onsuccess=()=>{db=opening.result;const read=db.transaction('results').objectStore('results').getAll();read.onsuccess=()=>{read.result.sort((a,b)=>a.created-b.created).forEach(renderEntry);resolve();};read.onerror=()=>resolve();};
+    opening.onerror=()=>resolve();
+  } catch {resolve();}
+});
+function renderEntry(entry){
+  const article=document.createElement('article');article.className='output';
+  const label=document.createElement('p');label.textContent=entry.prompt;article.append(label);
+  if(entry.image){const src='data:image/png;base64,'+entry.image;const img=document.createElement('img');img.src=src;img.alt=entry.prompt;const link=document.createElement('a');link.className='download';link.href=src;link.download='lofi-'+entry.id+'.png';link.textContent='Download image';article.append(img,link);}
+  else {const text=document.createElement('div');text.style.whiteSpace='pre-wrap';text.textContent=entry.result;article.append(text);}
+  document.querySelector(entry.image?'#image-history':'#text-history').prepend(article);
+}
+function saveEntry(entry){return new Promise(resolve=>{if(!db){resolve(false);return;}try{const tx=db.transaction('results','readwrite');tx.objectStore('results').put(entry);tx.oncomplete=()=>resolve(true);tx.onerror=tx.onabort=()=>resolve(false);}catch{resolve(false);}});}
+form.addEventListener('submit',async e=>{
+  e.preventDefault();if(busy)return;await ready;if(busy)return;
+  const button=e.submitter;if(!button)return;busy=true;
+  const buttons=[...form.querySelectorAll('button[name="action"]')];
+  const states=buttons.map(b=>b.disabled),label=button.textContent;
+  const data=new FormData(form);data.set('action',button.value);
+  buttons.forEach(b=>b.disabled=true);button.textContent=button.value==='image'?'Making your image…':'Writing…';status.textContent='';
+  try{
+    const response=await fetch(form.getAttribute('action')||window.location.pathname,{method:'POST',body:data,headers:{Accept:'application/json'}});
+    if(!response.headers.get('content-type')?.includes('application/json'))throw new Error('The server could not complete the request. Your previous results are still here.');
+    const payload=await response.json();
+    if(Number.isInteger(payload.remaining)){document.querySelector('#remaining').textContent=payload.remaining;states[buttons.findIndex(b=>b.value==='image')]=payload.remaining===0;}
+    if(!response.ok||payload.error)throw new Error(payload.error||'The request could not be completed.');
+    const entry={id:crypto.randomUUID(),created:Date.now(),prompt:data.get(button.value==='image'?'image_prompt':'prompt'),result:payload.result,image:payload.image};
+    renderEntry(entry);const saved=await saveEntry(entry);
+    status.textContent=saved?'Added to your history.':'Added to this page. Browser storage is unavailable; download images before leaving.';
+  }catch(error){status.textContent=error.message||'Connection interrupted. Your previous results are still here.';}
+  finally{buttons.forEach((b,i)=>b.disabled=states[i]);button.textContent=label;busy=false;}
+});
 </script><script>
 (()=>{
 const canvas=document.querySelector('#particle-field'),ctx=canvas.getContext('2d'),toggle=document.querySelector('#motion-toggle');
