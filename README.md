@@ -99,3 +99,7 @@ Regression checks (mocked, no API charges):
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+### Minimal motion workspace
+
+Headline and tagline removed at Sam’s request. The composer and expandable settings lead the first viewport. Ambient particles sit behind opaque controls; the native cursor remains. Motion can be paused and respects reduced-motion and hidden-tab states. The background is an original free Hugging Face MiniMax-H3 / Larry Turbo LoRA generation, processed into a silent forward/reverse 10.33-second loop. Source, prompt and processing provenance: `static/art/background-provenance.json`. Video and poster are served locally by Flask; no Hugging Face calls run for visitors.

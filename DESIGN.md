@@ -1,6 +1,6 @@
 ---
-name: Ask me anything
-description: A sculptural light table for paired image and text generation
+name: Generation studio
+description: A minimal prompt instrument over a quiet material video loop
 colors:
   signal: "#9e1515"
   bright: "#e93631"
@@ -127,3 +127,7 @@ Softened rectangular controls use the radius tokens; generated images are almost
 - Don't add a custom cursor or cursor-reactive particles.
 - Don't turn generated imagery into an obstruction to the prompt or settings.
 - Don't redistribute the Overpass binary while redistribution rights remain unresolved.
+
+## October 8 minimal motion revision
+
+Sam requested the headline/tagline removed and prompt/settings as the primary surface. Full-viewport red-black textured video generated on free Hugging Face, silent forward/reverse loop, ambient canvas particles behind opaque controls. Native cursor, persistent motion pause control, reduced-motion and hidden-tab pausing. Mobile settings and result pairs stack; Generate both fills the narrowest viewport.
