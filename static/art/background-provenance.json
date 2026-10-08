@@ -11,7 +11,12 @@
   "upsample_prompt": false,
   "cost": "Free ZeroGPU; no paid compute used",
   "prompt": "Locked-off macro shot of an abstract black liquid-metal surface with dark crimson translucent glass and fine analog film grain. Slow gentle ripples travel across the edges, tiny silver highlights breathe softly. Almost-black open center, darker center than edges, no objects or figures, no text, no logos, no bright flashes. Restrained tactile imperfect texture, scratched chrome, deep charcoal and signal red only. Minimal background for a creative tool. No camera movement, no zoom, steady light, continuous calm cyclical motion, seamless looping feeling. Silent.",
-  "processing": "Forward and reversed clip joined into a 10.33-second ping-pong loop; audio removed; H.264 yuv420p faststart CRF24. First frame exported as poster.",
+  "processing": "Forward-only loop with 0.75-second cross-dissolve from the end into the beginning. 107 frames at 24 fps, 4.458 seconds; no reverse playback. Silent H.264 yuv420p faststart CRF24.",
   "source_sha256": "f7f11ef5687e5d11915a6791524385498a9b02694110842bfdd1389b3fbdb8fe",
-  "loop_sha256": "500b2ab26dd03bba3f2d47a9e61a192439e7149fbe01ccfe0067da95b778f96e"
+  "loop_sha256": "9b5e3aa04274ce5e727835b2a85f3ae687212a5d71ac1f738e5363e60e39261a",
+  "seam_check": {
+    "mean_grayscale_pixel_change_at_wrap": 0.4995,
+    "mean_between_other_frames": 0.802,
+    "measurement_size": "240x136"
+  }
 }
