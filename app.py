@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI, OpenAIError
 import os, secrets, sqlite3, threading, hmac
 from dotenv import load_dotenv
@@ -83,6 +83,8 @@ def index():
             error = str(exc)
         except OpenAIError:
             error = 'OpenAI could not complete this request. Check model access, credit, or the prompt. No automatic retry was made.'
+    if request.method == 'POST' and request.headers.get('Accept') == 'application/json':
+        return jsonify(result=result, image=image, error=error, remaining=image_remaining()), (400 if error else 200)
     return render_template('index.html', values=values, result=result, image=image, error=error, original_instructions=ORIGINAL_INSTRUCTIONS, styles=STYLES, remaining=image_remaining(), csrf=session['csrf'])
 
 if __name__ == '__main__':
