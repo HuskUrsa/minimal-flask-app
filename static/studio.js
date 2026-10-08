@@ -36,3 +36,19 @@ form.addEventListener('submit',async e=>{
  }catch(error){setStatus(error.message||'Connection interrupted. Your previous generations are still here.',true);}
  finally{busy=false;button.disabled=false;button.querySelector('span').textContent='Generate both';progress.hidden=true;}
 });
+
+// Ambient motion never follows the pointer or competes with the composer.
+(()=>{
+ const video=document.querySelector('#ambient-video'),canvas=document.querySelector('#ambient-particles'),toggle=document.querySelector('#motion-toggle');
+ if(!video||!canvas||!toggle)return;
+ const ctx=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let paused=reduced.matches,frame=0,last=0,w=0,h=0,dots=[];
+ try{const saved=localStorage.getItem('sam-ambient-motion');if(saved==='paused')paused=true;}catch{}
+ function size(){w=innerWidth;h=innerHeight;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;ctx?.setTransform(dpr,0,0,dpr,0,0);dots=Array.from({length:Math.min(72,Math.floor(w*h/16000))},()=>({x:Math.random()*w,y:Math.random()*h,r:.7+Math.random()*1.4,v:.007+Math.random()*.018,a:.25+Math.random()*.4}));draw(0);}
+ function draw(delta){if(!ctx)return;ctx.clearRect(0,0,w,h);for(const p of dots){p.y-=p.v*delta;p.x+=Math.sin(p.y*.006)*delta*.002;if(p.y<0)p.y=h;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(221,226,218,${p.a})`;ctx.fill();}}
+ function tick(now){if(paused||document.hidden){frame=0;return;}draw(Math.min(now-last,50));last=now;frame=requestAnimationFrame(tick);}
+ function sync(){cancelAnimationFrame(frame);frame=0;toggle.textContent=paused?'Play motion':'Pause motion';toggle.setAttribute('aria-pressed',String(paused));if(paused||document.hidden){video.pause();return;}video.preload='metadata';video.play().catch(()=>{});last=performance.now();frame=requestAnimationFrame(tick);}
+ toggle.addEventListener('click',()=>{paused=!paused;try{localStorage.setItem('sam-ambient-motion',paused?'paused':'playing');}catch{}sync();});
+ reduced.addEventListener('change',e=>{if(e.matches){paused=true;sync();}});
+ document.addEventListener('visibilitychange',sync);window.addEventListener('resize',size,{passive:true});size();sync();
+})();
