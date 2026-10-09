@@ -131,3 +131,7 @@ Softened rectangular controls use the radius tokens; generated images are almost
 ## October 8 minimal motion revision
 
 Sam requested the headline/tagline removed and prompt/settings as the primary surface. Full-viewport red-black textured video generated on free Hugging Face, silent forward-only loop with a short cross-dissolve at the seam, ambient canvas particles behind opaque controls. Native cursor, persistent motion pause control, reduced-motion and hidden-tab pausing. Mobile settings and result pairs stack; Generate both fills the narrowest viewport.
+
+
+### Continuous texture revision — approved
+The generated source has no convincing natural join. Background rebuilt from a source frame using travelling spatial waves with a 15-second exact period. No reverse, cross-dissolve, or opacity changes. Phase and velocity match at the wrap. Existing particle layer, controls and reduced-motion behavior retained. Sam approved the working preview and authorized publication.

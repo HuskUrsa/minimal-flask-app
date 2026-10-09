@@ -103,3 +103,7 @@ python -m unittest discover -s tests -v
 ### Minimal motion workspace
 
 Headline and tagline removed at Sam’s request. The composer and expandable settings lead the first viewport. Ambient particles sit behind opaque controls; the native cursor remains. Motion can be paused and respects reduced-motion and hidden-tab states. The background is an original free Hugging Face MiniMax-H3 / Larry Turbo LoRA generation, processed into a silent forward-only 4.46-second loop with a short cross-dissolve at the seam. Source, prompt and processing provenance: `static/art/background-provenance.json`. Video and poster are served locally by Flask; no Hugging Face calls run for visitors.
+
+
+### Approved continuous background
+The current background uses the Hugging Face generated material as a texture, animated with travelling spatial waves over an exact 15-second period. Motion position and velocity match at the wrap; no reverse playback, cross-dissolve or opacity animation. The source video had no convincing natural join. Provenance: `static/art/background-periodic-provenance.json`. Particles, pause, reduced-motion and hidden-tab support remain.
