@@ -1,0 +1,24 @@
+{
+  "tool": "Hugging Face Space via browser",
+  "space": "https://huggingface.co/spaces/Pepe104/MiniMax-H3-Turbo-Lora-UNCENSORED",
+  "model": "MiniMax-H3",
+  "lora": "larryvrh/MiniMax-H3-Turbo-Lora",
+  "canvas": "960x544",
+  "frames": 124,
+  "duration_seconds": 5.167,
+  "steps": 6,
+  "seed": 42,
+  "upsample_prompt": false,
+  "cost": "Free ZeroGPU; no paid compute used",
+  "prompt": "Locked-off macro shot of an abstract black liquid-metal surface with dark crimson translucent glass and fine analog film grain. Slow gentle ripples travel across the edges, tiny silver highlights breathe softly. Almost-black open center, darker center than edges, no objects or figures, no text, no logos, no bright flashes. Restrained tactile imperfect texture, scratched chrome, deep charcoal and signal red only. Minimal background for a creative tool. No camera movement, no zoom, steady light, continuous calm cyclical motion, seamless looping feeling. Silent.",
+  "processing": "Original Hugging Face video frame at 1.833333s used as material. Spatial displacement by travelling waves with integer harmonics of a 15-second period; displacement and first derivatives match across wrap. No reverse, cross-dissolve or opacity animation. 360 frames at 24 fps; H.264 yuv420p, CRF23, faststart. Edges cropped to exclude clamp artifacts.",
+  "source_sha256": "f7f11ef5687e5d11915a6791524385498a9b02694110842bfdd1389b3fbdb8fe",
+  "loop_sha256": "4a06f27ade0e6001abafe3b98f6f322fde146bc545ec8c34c590a9db22f3ebd3",
+  "displacement": {
+    "period_frames": 360,
+    "x": "X+7*sin(Y/49-2*PI*N/360)+3*sin(Y/23+2*2*PI*N/360)",
+    "y": "Y+5*cos(X/71-2*PI*N/360)+2*sin(X/31-2*2*PI*N/360)",
+    "cb_cr_x": "X+3.5*sin(Y/24.5-2*PI*N/360)+1.5*sin(Y/11.5+2*2*PI*N/360)",
+    "cb_cr_y": "Y+2.5*cos(X/35.5-2*PI*N/360)+sin(X/15.5-2*2*PI*N/360)"
+  }
+}
